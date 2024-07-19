@@ -94,8 +94,9 @@ ports:
   #   containerPort: 9000
   #   protocol: TCP
 
-createService: true
+# createService: true
 service:
+  # create: true
   annotations: {}
   type: ClusterIP
   ports:
