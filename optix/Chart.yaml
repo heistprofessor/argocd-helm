@@ -1,5 +1,5 @@
 apiVersion: v2
-name: bff-layer
+name: optix
 description: This Helm Chart is used for bff-layer
 
 # A chart can be either an 'application' or a 'library' chart.
