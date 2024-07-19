@@ -1,0 +1,255 @@
+# Default values for taxonomy-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 20
+
+# Configmap
+createConfigMap: true
+configMapData:
+  ENV: stage
+  tag: v_e2ff369f_2024_03_28_08_31
+
+environment: stage 
+namespace: bff-layer
+name: bff-layer
+revisionHistoryLimit: 3
+minReadySeconds: 30
+rollbackWindow:
+  revisions: 5
+
+image:
+  repository: 537984406465.dkr.ecr.ap-south-1.amazonaws.com/bff-repo
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: v_e2ff369f_2024_03_28_08_31
+
+
+enableAuthZSideCar: true
+sidecarImage:
+  repository: 537984406465.dkr.ecr.ap-south-1.amazonaws.com/authz-pdp-engine
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  sidecarTag: stage
+authZsideCarvolumeMounts:
+  - name: secrets-store-inline
+    mountPath: /mnt/secrets-store
+    readOnly: true
+sidecarProbes:
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 20
+    periodSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 20
+    periodSeconds: 5
+sidecarContainerPorts:
+  - name: http
+    containerPort: 8001
+    protocol: TCP
+  - name: grpc
+    containerPort: 9001
+    protocol: TCP
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+volumeMounts:
+  - name: secrets-store-inline
+    mountPath: /mnt/secrets-store
+    readOnly: true
+
+# Secrets
+createSecret: true
+secretpath: /mnt/secrets-store
+SecretProviderClass:
+  objects:
+    - objectName: "arn:aws:secretsmanager:ap-south-1:646289650353:secret:ap-south-1-staging-authorization-service-elasticache-secret-J8Z6Jo"
+      objectType: "secretsmanager"
+      objectAlias: "redis_credentials"
+      region: "ap-south-1"
+    - objectName: "arn:aws:secretsmanager:ap-south-1:646289650353:secret:ap-south-1-staging-user-management-service-jwt-secret-jJvVFV"
+      objectType: "secretsmanager"
+      objectAlias: "jwt_secret"
+      region: ap-south-1
+    - objectName: "arn:aws:secretsmanager:ap-south-1:646289650353:secret:ap-south-1-staging-bff-service-elasticache-secret-QWCKdn"
+      objectType: "secretsmanager"
+      objectAlias: "elasticache_credentials"
+      region: ap-south-1
+    - objectName: "arn:aws:secretsmanager:ap-south-1:646289650353:secret:ap-south-1-staging-aes_encryption_secret-secret-tjEYBd"
+      objectType: "secretsmanager"
+      objectAlias: "aes_encryption_secret"
+      region: ap-south-1
+  
+    
+volumes:
+  - name: secrets-store-inline
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: bff-layer     # Prefer to keep it same as chart name
+#   - name: data-volume
+#     emptyDir: {} # Example of an emptyDir volume
+
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: 
+    eks.amazonaws.com/role-arn: "arn:aws:iam::646289650353:role/bff_service_account_role"
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "bff-sa"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # readOnlyRootFilesystem: false
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+# Probes
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+
+
+# Service Ports
+ports:
+  - name: http
+    containerPort: 8000
+    protocol: TCP
+  - name: grpc
+    containerPort: 9000
+    protocol: TCP
+
+createService: true
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+      name: grpc
+    # Add more ports if needed
+
+
+# Define volumes
+
+ingress:
+  enabled: false
+  # className: ""
+  # annotations: 
+  #   alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:274524495977:certificate/c9a157a3-d3c3-4b8a-8dd9-cc040208378e
+  #   alb.ingress.kubernetes.io/healthcheck-path: /health
+  #   alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+  #   alb.ingress.kubernetes.io/load-balancer-name: taxonomy-ingress
+  #   alb.ingress.kubernetes.io/scheme: internet-facing
+  #   alb.ingress.kubernetes.io/ssl-redirect: "443"
+  #   alb.ingress.kubernetes.io/target-type: ip
+  #   # kubernetes.io/ingress.class: nginx
+  #   # kubernetes.io/tls-acme: "true"
+  # ingressRules:
+  #   - http:
+  #       paths:
+  #       - backend:
+  #           service:
+  #             name: taxonomy-service
+  #             port:
+  #               number: http
+  #         path: /
+  #         pathType: Prefix
+
+
+  
+  # hosts:
+  #   - host: chart-example.local
+  #     paths:
+  #       - path: /
+  #         pathType: ImplementationSpecific
+  # tls: []
+  # #  - secretName: chart-example-tls
+  # #    hosts:
+  # #      - chart-example.local
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 4
+    memory: 8192Mi
+  requests:
+    cpu: 4
+    memory: 8192Mi
+
+autoscaling:
+  enabled: true
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+      - type: Percent
+        value: 20
+        periodSeconds: 180
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 700
+        periodSeconds: 10
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 45
+  targetMemoryUtilizationPercentage: 50
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Pod Disruption Budgets
+pdbSettings:
+  createPdb: true
+  # Specify either minAvailable or maxUnavailable, not both.
+  # Uncomment and set the one you want to use. 
+  useMinAvailable: true
+  minAvailable: "50%"      # minAvailable can be either an absolute number or a percentage
+
+  useMaxUnavailable: false
+  maxUnavailable: 1       # maxUnavailable can be either an absolute number or a percentage
+
+# topologySpreadConstraints:
+#   maxSkew: 1
+#   topologyKey: topology.kubernetes.io/zone
+#   whenUnsatisfiable: DoNotSchedule
+

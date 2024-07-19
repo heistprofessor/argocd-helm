@@ -1,0 +1,223 @@
+# Default values for bff-layer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+environment: dev
+namespace: optix
+name: optix
+
+image:
+  repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 202407151445
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Secrets
+createSecret: false
+secretpath: /mnt/secrets-store
+SecretProviderClass:
+  objects:
+    - objectName: ""
+      objectType: "secretsmanager"
+      objectAlias: "db_credentials"
+      region: "ap-south-1"
+    # - objectName: "another-object-name"
+    #   objectType: "another-type"
+    #   objectAlias: "another-alias"
+    #   region: "ap-south-1"
+
+# secretObjects:
+#   - objectName: arn:aws:secretsmanager:ap-south-1:646289650353:secret:rds!cluster-d20dc8ba-163a-45f5-beac-469efb4f3d4c-lcRXdK
+#     objectType: "secretsmanager"
+#     objectAlias: db_credentials
+#     region: ap-south-1
+#   - objectName: another-object-name
+#     objectType: "another-type"
+#     objectAlias: another-alias
+#     region: ap-south-1
+
+# Configmap
+createConfigMap: true
+configMapData:
+  ENV: dev
+  # key2: value2
+  # key3: value3
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations:
+    eks.amazonaws.com/role-arn: ""
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "default"
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # readOnlyRootFilesystem: false
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Probes
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+# Service Ports
+ports:
+  - name: http
+    containerPort: 8000
+    protocol: TCP
+  # - name: grpc
+  #   containerPort: 9000
+  #   protocol: TCP
+
+createService: true
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
+    # - port: 9000
+    #   targetPort: 9000
+    #   protocol: TCP
+    #   name: grpc
+    # Add more ports if needed
+
+# Define volumes
+# volumes:
+#   - name: secrets-store-inline
+#     csi:
+#       driver: secrets-store.csi.k8s.io
+#       readOnly: true
+#       volumeAttributes:
+#         secretProviderClass: bff-layer      # Prefer to keep it same as chart name
+#   - name: data-volume
+#     emptyDir: {} # Example of an emptyDir volume
+
+# Define volume mounts
+# volumeMounts:
+#   - name: secrets-store-inline
+#     mountPath: /mnt/secrets-store
+#     readOnly: true
+# - name: data-volume
+#   mountPath: /path/to/data
+#   readOnly: false
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/load-balancer-name: testpoc-ekscluster
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/target-type: ip
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  ingressRules:
+  rules:
+    - host: poc-optix.hostexam.net
+      paths:
+        - backend:
+            service:
+              name: optix
+              port:
+                number: http
+          path: /
+          pathType: Prefix
+
+  # hosts:
+  #   - host: chart-example.local
+  #     paths:
+  #       - path: /
+  #         pathType: ImplementationSpecific
+  # tls: []
+  # #  - secretName: chart-example-tls
+  # #    hosts:
+  # #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 300
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 15
+        - type: Pods
+          value: 2
+          periodSeconds: 15
+      selectPolicy: Max
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 300
+  targetMemoryUtilizationPercentage: 300
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Pod Disruption Budgets
+pdbSettings:
+  createPdb: false
+  # Specify either minAvailable or maxUnavailable, not both.
+  # Uncomment and set the one you want to use.
+  useMinAvailable: true
+  minAvailable: "60%" # minAvailable can be either an absolute number or a percentage
+
+  useMaxUnavailable: false
+  maxUnavailable: 1 # maxUnavailable can be either an absolute number or a percentage
+
+topologySpreadConstraints:
+  maxSkew: 1
+  topologyKey: topology.kubernetes.io/zone
+  whenUnsatisfiable: DoNotSchedule

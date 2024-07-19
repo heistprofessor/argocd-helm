@@ -1,0 +1,21 @@
+version: 0.2
+ 
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $DEVOPS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com
+      - aws s3 cp s3://iras-trivy-bucket/aws-signer-notation-cli_amd64.rpm /tmp/notation.rpm
+      - rpm -ivh /tmp/notation.rpm
+      - cat Dockerfile
+      - export DOCKER_TAG=$(grep 'FROM .*:.*$' Dockerfile | awk -F ':' '{print $2}' | tr -d '\r')
+      - echo $DOCKER_TAG
+  build:
+    commands:
+      - docker build -t ngfw-image -f Dockerfile .
+      - docker images
+      - docker tag ngfw-image:latest $DEVOPS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPO_NAME:$DOCKER_TAG
+      - docker push $DEVOPS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPO_NAME:$DOCKER_TAG
+      - export PROFILE_ARN=$(aws signer get-signing-profile --profile-name iras_signer_profile | jq .arn -r)
+      - notation key add --plugin com.amazonaws.signer.notation.plugin --id $PROFILE_ARN --default iras_signer_profile
+      - notation sign $DEVOPS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPO_NAME:$DOCKER_TAG
+      - notation inspect $DEVOPS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPO_NAME:$DOCKER_TAG
