@@ -94,9 +94,8 @@ ports:
   #   containerPort: 9000
   #   protocol: TCP
 
-# createService: true
+createService: true
 service:
-  # create: true
   annotations: {}
   type: ClusterIP
   ports:
@@ -217,6 +216,9 @@ pdbSettings:
 
   useMaxUnavailable: false
   maxUnavailable: 1 # maxUnavailable can be either an absolute number or a percentage
+
+rollbackWindow:
+  revisions: 1 # Replace 10 with the desired number of revisions
 
 topologySpreadConstraints:
   maxSkew: 1
