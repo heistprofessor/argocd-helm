@@ -90,9 +90,6 @@ ports:
   - name: http
     containerPort: 80
     protocol: TCP
-  - name: https
-    containerPort: 80
-    protocol: TCP
   # - name: grpc
   #   containerPort: 9000
   #   protocol: TCP
@@ -106,8 +103,8 @@ service:
       targetPort: 80
       protocol: TCP
       name: http
-    - port: 80
-      targetPort: 443
+    - port: 443
+      targetPort: 80
       protocol: TCP
       name: https
     # - port: 9000
