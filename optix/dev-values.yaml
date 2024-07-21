@@ -90,6 +90,9 @@ ports:
   - name: http
     containerPort: 80
     protocol: TCP
+  - name: https
+    containerPort: 80
+    protocol: TCP
   # - name: grpc
   #   containerPort: 9000
   #   protocol: TCP
@@ -103,6 +106,10 @@ service:
       targetPort: 80
       protocol: TCP
       name: http
+    - port: 80
+      targetPort: 443
+      protocol: TCP
+      name: https
     # - port: 9000
     #   targetPort: 9000
     #   protocol: TCP
@@ -131,20 +138,20 @@ service:
 
 ingress:
   enabled: true
-  className: alb
   annotations:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     alb.ingress.kubernetes.io/load-balancer-name: testpoc-ekscluster
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-2016-08
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/target-type: ip
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   ingressRules:
+spec:
+  ingressClassName: alb
   rules:
-    - host: poc-optix.hostexam.net
+    - host: pocoptix.hostexam.net
       paths:
         - backend:
             service:
