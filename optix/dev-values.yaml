@@ -148,14 +148,15 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
   ingressRules:
     - host: pocoptix.hostexam.net
-      paths:
-        - backend:
-            service:
-              name: optix
-              port:
-                number: https
-          path: /
-          pathType: Prefix
+      http:
+        paths:
+          - backend:
+              service:
+                name: optix
+                port:
+                  number: https
+            path: /
+            pathType: Prefix
 
   #   ingressRules:
   # spec:
