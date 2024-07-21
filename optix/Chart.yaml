@@ -1,6 +1,6 @@
 apiVersion: v2
 name: optix
-description: This Helm Chart is used for bff-layer
+description: This Helm Chart is used for optix
 
 # A chart can be either an 'application' or a 'library' chart.
 #
