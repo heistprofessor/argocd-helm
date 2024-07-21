@@ -135,6 +135,7 @@ service:
 
 ingress:
   enabled: true
+  className: ""
   annotations:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
     alb.ingress.kubernetes.io/healthcheck-path: /
@@ -144,7 +145,6 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/target-type: ip
-  ingressClassName: alb
   ingressRules:
     - host: pocoptix.hostexam.net
       paths:
@@ -152,7 +152,7 @@ ingress:
             service:
               name: optix
               port:
-                number: 443
+                number: https
           path: /
           pathType: Prefix
 
