@@ -144,8 +144,6 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/target-type: ip
-  ingressRules:
-spec:
   ingressClassName: alb
   rules:
     - host: pocoptix.hostexam.net
@@ -158,6 +156,8 @@ spec:
           path: /
           pathType: Prefix
 
+  #   ingressRules:
+  # spec:
   # hosts:
   #   - host: chart-example.local
   #     paths:
