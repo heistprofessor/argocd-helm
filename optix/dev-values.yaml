@@ -140,7 +140,7 @@ ingress:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
-    alb.ingress.kubernetes.io/load-balancer-name: testpoc-ekscluster
+    alb.ingress.kubernetes.io/load-balancer-name: pocoptix-ekscluster
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-2016-08
     alb.ingress.kubernetes.io/subnets: subnet-0c42c1490edbf7ee0, subnet-0dbfeb3d12a4f1110
     alb.ingress.kubernetes.io/scheme: internet-facing
