@@ -74,16 +74,16 @@ securityContext:
 # Probes
 livenessProbe:
   httpGet:
-    path: /health
+    path: /
     port: http
   initialDelaySeconds: 5
-  periodSeconds: 5
+  periodSeconds: 20
 readinessProbe:
   httpGet:
-    path: /health
+    path: /
     port: http
   initialDelaySeconds: 5
-  periodSeconds: 5
+  periodSeconds: 20
 
 # Service Ports
 ports:
