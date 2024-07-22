@@ -148,15 +148,15 @@ ingress:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/target-type: ip
   ingressRules:
-    - host: poc-optix.hostexam.net
-        paths:
-          - backend:
-              service:
-                name: optix
-                port:
-                  number: https
-            path: /
-            pathType: Prefix
+  - host: poc-optix.hostexam.net
+      paths:
+      - backend:
+          service:
+            name: optix
+            port:
+              number: https
+        path: /
+        pathType: Prefix
 
   #   ingressRules:
   # spec:
