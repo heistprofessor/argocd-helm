@@ -75,13 +75,13 @@ securityContext:
 livenessProbe:
   httpGet:
     path: /
-    port: 8000
+    port: 80
   initialDelaySeconds: 5
   periodSeconds: 20
 readinessProbe:
   httpGet:
     path: /
-    port: 8000
+    port: 80
   initialDelaySeconds: 5
   periodSeconds: 20
 
