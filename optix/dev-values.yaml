@@ -142,7 +142,7 @@ ingress:
     alb.ingress.kubernetes.io/group.name: examonline
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     alb.ingress.kubernetes.io/load-balancer-name: poc-ekscluster
-    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-2016-08
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
     alb.ingress.kubernetes.io/subnets: subnet-0c42c1490edbf7ee0, subnet-0dbfeb3d12a4f1110
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-redirect: "443"
