@@ -19,11 +19,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Secrets
-createSecret: false
-secretpath: /mnt/secrets-store
+createSecret: true
+secretpath: /usr/src/app/dist/apps/api/
 SecretProviderClass:
   objects:
-    - objectName: ""
+    - objectName: "arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT"
       objectType: "secretsmanager"
       objectAlias: "db_credentials"
       region: "ap-south-1"
