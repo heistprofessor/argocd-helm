@@ -139,6 +139,7 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
     alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/group.name: examonline
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     alb.ingress.kubernetes.io/load-balancer-name: pocoptix-ekscluster
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-2016-08
@@ -148,7 +149,6 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
   ingressRules:
     - host: pocoptix.hostexam.net
-      http:
         paths:
           - backend:
               service:
