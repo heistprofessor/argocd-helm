@@ -88,7 +88,7 @@ readinessProbe:
 # Service Ports
 ports:
   - name: http
-    containerPort: 8000
+    containerPort: 80
     protocol: TCP
   # - name: grpc
   #   containerPort: 9000
@@ -100,11 +100,11 @@ service:
   type: ClusterIP
   ports:
     - port: 80
-      targetPort: 8000
+      targetPort: 80
       protocol: TCP
       name: http
     - port: 443
-      targetPort: 8000
+      targetPort: 80
       protocol: TCP
       name: https
     # - port: 9000
