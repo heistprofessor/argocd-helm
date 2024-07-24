@@ -89,7 +89,7 @@ readinessProbe:
 # Service Ports
 ports:
   - name: http
-    containerPort: 3000
+    containerPort: 80
     protocol: TCP
   # - name: grpc
   #   containerPort: 9000
