@@ -24,9 +24,9 @@ createSecret: true
 secretpath: /usr/src/app/dist/apps/api/
 SecretProviderClass:
   objects:
-    - objectName: "arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT"
+    - objectName: arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT
       objectType: "secretsmanager"
-      objectAlias: "db_credentials"
+      objectAlias: "PORT"
       region: "ap-south-1"
     # - objectName: "another-object-name"
     #   objectType: "another-type"
@@ -34,7 +34,7 @@ SecretProviderClass:
     #   region: "ap-south-1"
 
 # secretObjects:
-#   - objectName: arn:aws:secretsmanager:ap-south-1:646289650353:secret:rds!cluster-d20dc8ba-163a-45f5-beac-469efb4f3d4c-lcRXdK
+#   - objectName: arn:aws:secretsmanager:ap-south-1:account_id:secret:rds!c
 #     objectType: "secretsmanager"
 #     objectAlias: db_credentials
 #     region: ap-south-1
