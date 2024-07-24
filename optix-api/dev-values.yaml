@@ -73,12 +73,12 @@ securityContext:
   # runAsUser: 1000
 
 # Probes
-# livenessProbe:
-#   httpGet:
-#     path: /
-#     port: http
-#   initialDelaySeconds: 5
-#   periodSeconds: 20
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 20000
 # readinessProbe:
 #   httpGet:
 #     path: /
