@@ -9,15 +9,16 @@ namespace: optix-api
 name: optix-api
 
 image:
-  repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
+  repository: nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
-
+fullnameOverride:
+  ""
+  # repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
 # Secrets
 createSecret: true
 secretpath: /usr/src/app/dist/apps/api/
