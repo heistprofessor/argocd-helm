@@ -78,13 +78,13 @@ livenessProbe:
     path: /
     port: http
   initialDelaySeconds: 5
-  periodSeconds: 20
+  periodSeconds: 2000
 readinessProbe:
   httpGet:
     path: /
     port: http
   initialDelaySeconds: 5
-  periodSeconds: 20
+  periodSeconds: 2000
 
 # Service Ports
 ports:
