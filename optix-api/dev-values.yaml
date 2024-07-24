@@ -12,7 +12,7 @@ image:
   repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: a5049c2-20240724105108
+  tag: 57acec5-20240724112043
 
 imagePullSecrets: []
 nameOverride: ""
