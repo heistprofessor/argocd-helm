@@ -9,7 +9,7 @@ namespace: optix-api
 name: optix-api
 
 image:
-  repository: nginx
+  repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
@@ -89,7 +89,7 @@ readinessProbe:
 # Service Ports
 ports:
   - name: http
-    containerPort: 80
+    containerPort: 3000
     protocol: TCP
   # - name: grpc
   #   containerPort: 9000
