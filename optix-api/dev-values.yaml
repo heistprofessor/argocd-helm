@@ -21,13 +21,13 @@ fullnameOverride:
   # repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
 # Secrets
 createSecret: true
-secretpath: /usr/src/app/dist/apps/
+secretpath: /usr/src/app/dist/apps/api/.env1
 SecretProviderClass:
   objects:
     - objectName: arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT
       objectType: "secretsmanager"
       region: "ap-south-1"
-      objectAlias: "api"
+      objectAlias: "PORT"
     # - objectName: "another-object-name"
     #   objectType: "another-type"
     #   objectAlias: "another-alias"
@@ -128,9 +128,8 @@ volumes:
 # Define volume mounts
 volumeMounts:
   - name: secrets-store-inline
-    mountPath: /usr/src/app/dist/apps/
+    mountPath: /usr/src/app/dist/apps/api/.env1
     readOnly: true
-    subPath: ".env1"
 # - name: data-volume
 #   mountPath: /path/to/data
 #   readOnly: false
