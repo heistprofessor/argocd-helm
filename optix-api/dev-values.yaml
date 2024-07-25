@@ -27,7 +27,7 @@ SecretProviderClass:
     - objectName: arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT
       objectType: "secretsmanager"
       region: "ap-south-1"
-      objectAlias: "env"
+      # objectAlias: "env"
     # - objectName: "another-object-name"
     #   objectType: "another-type"
     #   objectAlias: "another-alias"
