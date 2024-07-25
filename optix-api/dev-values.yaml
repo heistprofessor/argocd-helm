@@ -21,13 +21,13 @@ fullnameOverride:
   # repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix-api
 # Secrets
 createSecret: true
-secretpath: /usr/src/app/dist/apps/api/.env
+secretpath: /usr/src/app/dist/apps/api/
 SecretProviderClass:
   objects:
     - objectName: arn:aws:secretsmanager:ap-south-1:339712745663:secret:exam-online-api-secrets-Z53ziT
       objectType: "secretsmanager"
       region: "ap-south-1"
-      objectAlias: "olp"
+      objectAlias: ".env"
     # - objectName: "another-object-name"
     #   objectType: "another-type"
     #   objectAlias: "another-alias"
