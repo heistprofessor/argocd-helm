@@ -130,7 +130,7 @@ volumeMounts:
   - name: secrets-store-inline
     mountPath: /usr/src/app/dist/apps/
     readOnly: true
-    subPath: ".env"
+    # subPath: ".env"
 # - name: data-volume
 #   mountPath: /path/to/data
 #   readOnly: false
