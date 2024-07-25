@@ -115,21 +115,21 @@ service:
     # Add more ports if needed
 
 # Define volumes
-# volumes:
-#   - name: secrets-store-inline
-#     csi:
-#       driver: secrets-store.csi.k8s.io
-#       readOnly: true
-#       volumeAttributes:
-#         secretProviderClass: bff-layer      # Prefer to keep it same as chart name
-#   - name: data-volume
-#     emptyDir: {} # Example of an emptyDir volume
+volumes:
+  - name: secrets-store-inline
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: optix-api # Prefer to keep it same as chart name
+  # - name: env-volume
+  #   emptyDir: {} # Example of an emptyDir volume
 
 # Define volume mounts
-# volumeMounts:
-#   - name: secrets-store-inline
-#     mountPath: /mnt/secrets-store
-#     readOnly: true
+volumeMounts:
+  - name: secrets-store-inline
+    mountPath: /usr/src/app/dist/apps/api/.env1
+    readOnly: true
 # - name: data-volume
 #   mountPath: /path/to/data
 #   readOnly: false
