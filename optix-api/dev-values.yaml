@@ -129,8 +129,8 @@ volumes:
 volumeMounts:
   - name: secrets-store-inline
     mountPath: /usr/src/app/dist/apps/api/
-    subPath: ".env"
     readOnly: true
+    # subPath: ".env"
 # - name: data-volume
 #   mountPath: /path/to/data
 #   readOnly: false
