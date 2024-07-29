@@ -271,6 +271,7 @@ pdbSettings:
 
 rollbackWindow:
   revisions: 1 # Replace 10 with the desired number of revisions
+revisionHistoryLimit: 5
 
 topologySpreadConstraints:
   maxSkew: 1
