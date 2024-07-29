@@ -1,0 +1,242 @@
+# Default values for bff-layer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+environment: dev
+namespace: optix
+name: optix
+
+image:
+  repository: 339712745663.dkr.ecr.ap-south-1.amazonaws.com/optix
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ac34629-20240726051404
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Secrets
+createSecret: false
+secretpath: /mnt/secrets-store
+SecretProviderClass:
+  objects:
+    - objectName: ""
+      objectType: "secretsmanager"
+      objectAlias: "db_credentials"
+      region: "ap-south-1"
+    # - objectName: "another-object-name"
+    #   objectType: "another-type"
+    #   objectAlias: "another-alias"
+    #   region: "ap-south-1"
+
+# secretObjects:
+#   - objectName: arn:aws:secretsmanager:ap-south-1:646289650353:secret:rds!cluster-d20dc8ba-163a-45f5-beac-469efb4f3d4c-lcRXdK
+#     objectType: "secretsmanager"
+#     objectAlias: db_credentials
+#     region: ap-south-1
+#   - objectName: another-object-name
+#     objectType: "another-type"
+#     objectAlias: another-alias
+#     region: ap-south-1
+
+# Configmap
+createConfigMap: true
+configMapData:
+  ENV: dev
+  # key2: value2
+  # key3: value3
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations:
+    eks.amazonaws.com/role-arn: ""
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "default"
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # readOnlyRootFilesystem: false
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Probes
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 20
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 20
+
+# Service Ports
+ports:
+  - name: http
+    containerPort: 80
+    protocol: TCP
+  # - name: grpc
+  #   containerPort: 9000
+  #   protocol: TCP
+
+createService: true
+service:
+  annotations: {}
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 80
+      protocol: TCP
+      name: https
+    # - port: 9000
+    #   targetPort: 9000
+    #   protocol: TCP
+    #   name: grpc
+    # Add more ports if needed
+
+# Define volumes
+# volumes:
+#   - name: secrets-store-inline
+#     csi:
+#       driver: secrets-store.csi.k8s.io
+#       readOnly: true
+#       volumeAttributes:
+#         secretProviderClass: bff-layer      # Prefer to keep it same as chart name
+#   - name: data-volume
+#     emptyDir: {} # Example of an emptyDir volume
+
+# Define volume mounts
+# volumeMounts:
+#   - name: secrets-store-inline
+#     mountPath: /mnt/secrets-store
+#     readOnly: true
+# - name: data-volume
+#   mountPath: /path/to/data
+#   readOnly: false
+
+ingress:
+  enabled: false
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/group.name: examonline
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/load-balancer-name: poc-ekscluster
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
+    alb.ingress.kubernetes.io/subnets: subnet-0c42c1490edbf7ee0, subnet-0dbfeb3d12a4f1110
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/target-type: ip
+  ingressRules:
+    - host: poc-optix.hostexam.net
+      paths:
+        - backend:
+            service:
+              name: optix
+              port:
+                number: https
+          path: /
+          pathType: Prefix
+  # ingressRules:
+  #   - http:
+  #       paths:
+  #       - backend:
+  #           service:
+  #             name: service-name
+  #             port:
+  #               number: http
+  #         path: /
+  #         pathType: Prefix
+
+  #   ingressRules:
+  # spec:
+  # hosts:
+  #   - host: chart-example.local
+  #     paths:
+  #       - path: /
+  #         pathType: ImplementationSpecific
+  # tls: []
+  # #  - secretName: chart-example-tls
+  # #    hosts:
+  # #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 1000m
+    memory: 2048Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 300
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 15
+        - type: Pods
+          value: 2
+          periodSeconds: 15
+      selectPolicy: Max
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 300
+  targetMemoryUtilizationPercentage: 300
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Pod Disruption Budgets
+pdbSettings:
+  createPdb: false
+  # Specify either minAvailable or maxUnavailable, not both.
+  # Uncomment and set the one you want to use.
+  useMinAvailable: true
+  minAvailable: "60%" # minAvailable can be either an absolute number or a percentage
+
+  useMaxUnavailable: false
+  maxUnavailable: 1 # maxUnavailable can be either an absolute number or a percentage
+
+rollbackWindow:
+  revisions: 1 # Replace 10 with the desired number of revisions
+
+topologySpreadConstraints:
+  maxSkew: 1
+  topologyKey: topology.kubernetes.io/zone
+  whenUnsatisfiable: DoNotSchedule

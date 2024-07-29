@@ -168,18 +168,53 @@ ingress:
   #               number: http
   #         path: /
   #         pathType: Prefix
-
-  #   ingressRules:
-  # spec:
-  # hosts:
-  #   - host: chart-example.local
-  #     paths:
-  #       - path: /
-  #         pathType: ImplementationSpecific
-  # tls: []
-  # #  - secretName: chart-example-tls
-  # #    hosts:
-  # #      - chart-example.local
+#------------------------------------------------------------
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: pocalb-ingress
+#   namespace: argocd
+#   annotations:
+#     alb.ingress.kubernetes.io/scheme: internet-facing
+#     alb.ingress.kubernetes.io/group.name: examonline
+#     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:339712745663:certificate/2fb08e77-83be-4d79-802d-9a75e6f5db8d
+#     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
+#     alb.ingress.kubernetes.io/backend-protocol: HTTPS
+#     alb.ingress.kubernetes.io/healthcheck-path: /
+#     alb.ingress.kubernetes.io/load-balancer-name: poc-ekscluster
+#     alb.ingress.kubernetes.io/subnets: subnet-0c42c1490edbf7ee0, subnet-0dbfeb3d12a4f1110
+#     alb.ingress.kubernetes.io/target-type: 'ip'
+#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS": 443}]'
+#     alb.ingress.kubernetes.io/ssl-redirect: '443'
+#   finalizers:
+#     - ingress.k8s.aws/resources
+#   labels:
+#     app: argocd-ingress
+# spec:
+#   ingressClassName: alb
+#   rules:
+#     - host: poc-argocd.hostexam.net
+#       http:
+#         paths:
+#           - path: /
+#             backend:
+#               service:
+#                 name: argocd-server
+#                 port:
+#                   number: 443
+#             pathType: Prefix
+#-------------------------------------------------------------------------
+#   ingressRules:
+# spec:
+# hosts:
+#   - host: chart-example.local
+#     paths:
+#       - path: /
+#         pathType: ImplementationSpecific
+# tls: []
+# #  - secretName: chart-example-tls
+# #    hosts:
+# #      - chart-example.local
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
