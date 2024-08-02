@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+  pre_build:
+    commands:
+      - echo building dependency package...
+      - cd $CODEBUILD_SRC_DIR/
+      - cd fri2023/fri_mvc_login/
+      - ls
+      - npm install --force
+  build:
+    commands:
+      - echo Running Maven package...
+      - npm run build --no-optimization
+  post_build:
+    commands:
+      - echo Build completed successfully!
+
+artifacts:
+  files:
+    - "**/appspec.yml"
+    - "**/scripts/**"
+    - "**/dist/**"
+  base-directory: fri_mvc_login
+# #!/bin/bash
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+# source ~/.bashrc
+# nvm install --lts
+# node -e "console.log('Running Node.js ' + process.version)"
+# npm install pm2 -g
+# pm2 completion install
+# pm2 update
