@@ -14,3 +14,4 @@ pm2 completion install
 pm2 update
 pm2 startup
 pm2 start /var/www/html/deployment/dist/server.js
+pm2 save
