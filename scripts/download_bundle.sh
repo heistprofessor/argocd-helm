@@ -9,6 +9,5 @@ export NVM_DIR="$HOME/.nvm"
 nvm install --lts
 node -e "console.log('Running Node.js ' + process.version)"
 npm install pm2 -g
-pm2 completion install
-pm2 update
+pm2 startup
 pm2 save
